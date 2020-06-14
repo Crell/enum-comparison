@@ -45,3 +45,49 @@ The simple case looks like this:
 ```
 
 Enums do not support constructors.  (Or rather, the constructor is private so you cannot pass parameters to it.)
+
+
+### Python
+
+Python builds its enum support on top of classes.  An "enum class" is simply a class that extends the `enum.Enum` parent, which has a lot of methods pre-implemented to provide Enum-ish behavior.  All properties of the class are enum members:
+
+```python
+import enum
+
+class Card(enum.Enum):
+    HEARTS = enum.auto()
+    DIAMONDS = enum.auto()
+    CLUBS = 'C'
+    SPADES = "S"
+```
+
+Enum members can be any int or string primitive, or can be auto-generated.  The auto-generation logic can also be overridden by defining a `_generate_next_value_()` method in the class.  When an enum value is cast to a string, it always shows as `Card.CLUBS` or similar, but can be overridden by implementing the `__str__` method.
+
+Enum member names must be unique, but values need not be.  If two members have the same value then the syntactically first one wins, and all others are alises to it.  The aliases will be skipped when iterating an enum or casting it to a list.  If needed, you can get the original list with `Card.__members__.items()`.
+
+As a class, an enum can also have methods.  However, the methods have no native way to vary depending on which enum value they're on.  You can check the value within the method, though:
+
+```python
+class Card(enum.Enum):
+    HEARTS = enum.auto()
+    DIAMONDS = enum.auto()
+    CLUBS = 'C'
+    SPADES = "S"
+
+    def color(self):
+        if self in [self.CLUBS, self.SPADES]:
+            return "Black"
+        else:
+            return "Red"
+```
+
+Because Python lacks any meaningful type declarations on variables, parameters, or return values, there's no way to restrict a value to an enum list.  Enum classes also cannot be extended.
+
+The `Enum` class also has an alternate function-style syntax for simple cases:
+
+```python
+Card = Enum('Card', 'HEARTS DIAMONDS CLUBS SPADES')
+```
+
+Further reading: https://docs.python.org/3/library/enum.html
+

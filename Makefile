@@ -1,7 +1,7 @@
 
-all: c java
+all: c java python
 
-.PHONY: c java
+.PHONY: c java python
 
 clean: clean-c clean-java
 
@@ -21,3 +21,7 @@ java:
 
 clean-java:
 	cd java && rm -f *.class
+
+python:
+	cd python && \
+	python3 enumtest.py
