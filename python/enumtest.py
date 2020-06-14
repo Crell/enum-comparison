@@ -1,6 +1,6 @@
 import enum
 
-class Card(enum.Enum):
+class Suit(enum.Enum):
     HEARTS = enum.auto()
     DIAMONDS = enum.auto()
     CLUBS = 'C'
@@ -13,7 +13,7 @@ class Card(enum.Enum):
             return "Red"
 
 
-for card in (Card):
+for card in (Suit):
     print ("As a string: " + str(card))
     # print (card)
     print ("As a repr: ")
@@ -22,4 +22,4 @@ for card in (Card):
     print('-----')
 
 print ("Are they equal?")
-print (Card.HEARTS == Card.HEARTS)
+print (Suit.HEARTS == Suit.HEARTS)

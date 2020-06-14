@@ -54,7 +54,7 @@ Python builds its enum support on top of classes.  An "enum class" is simply a c
 ```python
 import enum
 
-class Card(enum.Enum):
+class Suit(enum.Enum):
     HEARTS = enum.auto()
     DIAMONDS = enum.auto()
     CLUBS = 'C'
@@ -68,7 +68,7 @@ Enum member names must be unique, but values need not be.  If two members have t
 As a class, an enum can also have methods.  However, the methods have no native way to vary depending on which enum value they're on.  You can check the value within the method, though:
 
 ```python
-class Card(enum.Enum):
+class Suit(enum.Enum):
     HEARTS = enum.auto()
     DIAMONDS = enum.auto()
     CLUBS = 'C'
@@ -86,7 +86,7 @@ Because Python lacks any meaningful type declarations on variables, parameters, 
 The `Enum` class also has an alternate function-style syntax for simple cases:
 
 ```python
-Card = Enum('Card', 'HEARTS DIAMONDS CLUBS SPADES')
+Suit = Enum('Suit', 'HEARTS DIAMONDS CLUBS SPADES')
 ```
 
 Further reading: https://docs.python.org/3/library/enum.html
