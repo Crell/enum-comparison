@@ -12,8 +12,8 @@ class Main {
       System.out.println(c);
     }
 
-
-    System.out.println("Suit is: %s", Card::SPADES);
+    System.out.println("Suit is: %s" + Card.valueOf("SPADES"));
+    System.out.println("Suit is: %s" + Card.valueOf("SPADES").ordinal());
   }
 
 }
