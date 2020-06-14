@@ -91,3 +91,104 @@ Card = Enum('Card', 'HEARTS DIAMONDS CLUBS SPADES')
 
 Further reading: https://docs.python.org/3/library/enum.html
 
+### Typescript
+
+Typescript supports primitive enumerations, including both constant and runtime-defined values.  Depending on the details they may or may not get compiled away to literal constants in code.  It has its own dedicated keyword.
+
+```typescript
+enum Suit {
+    Hearts,
+    Diamonds,
+    Clubs,
+    Spades,
+}
+```
+
+is equivalent to
+
+```typescript
+enum Suit {
+    Hearts = 0,
+    Diamonds = 1,
+    Clubs = 2,
+    Spades =3,
+}
+```
+
+Enums can also have string values if specified explicitly.  Values can be set based on some other value, even function definitions:
+
+```typescript
+enum FileAccess {
+    // constant members
+    None,
+    Read    = 1 << 1,
+    Write   = 1 << 2,
+    ReadWrite  = Read | Write,
+    // computed members
+    UserSetting = userDefaultValue()
+}
+```
+
+Normally enums exist at runtime, but a fully-constant enum can also be flagged to compile-away to raw constants in the source code:
+
+```typescript
+const enum ShouldWe {
+    No,
+    Yes,
+}
+```
+
+Enum types can be used as type declarations:
+
+```typescript
+function pickCard(desiredSuit: Suit): Card { }
+```
+
+Further reading: https://www.typescriptlang.org/docs/handbook/enums.html
+
+### Rust
+
+
+### Haskell
+
+Strictly speaking Haskell doesn't have enums, but the way its type system works gives you something close enough that I'm going to include it.  In Haskell, you define a new data type with the `data` keyword, which can be defined in terms of other data types and type constructors.
+
+It's really hard to explain without going into the whole type system, so I'll stick to some examples:
+
+```haskell
+data Suit = Hearts | Diamonds | Clubs | Spades
+```
+The type "Suit" has only four values, one for each suit.  They are not backed by a primitive value but literally are those values only.  Haskell doesn't have methods as we'd understand them in the OOP world, so methods cannot be attached to them.  The can, however, be used in pattern matching:
+
+```haskell
+data Color = Red | Black
+
+suitColor :: Suit -> Color
+suitColor Hearts | Diamonds = Red
+suitColor Clubs | Spades = Black
+```
+
+Because type values are technically not values but "type constructors" they can be parameterized by other values.  For instance, the infamous Maybe Monad is defined as:
+
+```haskell
+data Maybe a = Just a | Nothing
+```
+
+That is, a "Maybe" can be either the literal `Nothing` or a `Just` combined with some other value, which can then be extracted later using pattern matching.
+
+```haskell
+stuff :: Maybe a -> Int
+stuff Nothing = 0
+stuff Just a = a
+```
+
+Further reading: https://wiki.haskell.org/Type
+
+### F#
+
+
+### C#
+
+
+### Swift
+
