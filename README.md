@@ -186,6 +186,49 @@ Further reading: https://wiki.haskell.org/Type
 
 ### F#
 
+F#, in what seems to be a very on-brand move, has both union types *and* enums.  They are very similar but not quite the same thing.
+
+Union types in F# look and act an awful lot like Haskell, including the requierment that the unioned types start with a capital.
+
+```f#
+type SuitUnion = Hearts | Diamonds | Clubs | Spades
+```
+
+They have no underlying primitive equivalent.  F#'s `match` directive forces you to enumerate all possible values, to help avoid errors:
+
+```f#
+let color = match x with 
+    | Hearts -> Red
+    | Diamonds -> Red
+    | Clubs -> Black
+    | Spades -> Black
+```
+
+Enums in F#, by contrast, are backed by underlying integer primitives that you specify.  Strings are not allowed.  They can be all lowercase if you want, but have to be qualified when referencing to them:
+
+```f#
+type SuitEnum = Hearts = 1 | diamonds = 2 | Clubs = 3 | Spades = 4
+
+let color = match x with 
+    | SuitEnum.Hearts -> "Red"
+    | SuitEnum.diamonds -> "Red"
+    | SuitEnum.Clubs -> "Black"
+    | SuitEnum.Spades -> "Black"
+    | _ -> "What kind of deck are you using?"
+```
+
+Enums can be cast to and from integers.  That also, oddly, allow you to define an enum value that is out of range.
+
+```f#
+// This is amazingly legal.
+let horseshoe = enum<SuitEnum>(5)
+```
+
+For that reason, the `_` fallback match arm is required for enums, but not for unions.
+
+Because F# doesn't have function parameter or return types, neither unions nor enums can be type defined in a function signature.
+
+Further reading: https://fsharpforfunandprofit.com/posts/enum-types/
 
 ### C#
 
