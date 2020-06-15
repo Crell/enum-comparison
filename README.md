@@ -270,6 +270,22 @@ Enum.TryParse<WeekDays>("1", out wdEnum);
 Console.WriteLine(wdEnum);
 ```
 
+Although they're not a class, you can technically add "extension methods" to enums that end up looking kind of like them.  For instance:
+
+```csharp
+public static string Color(this Suit s) {
+    switch (s)
+    {
+        case Hearts: return "Red";
+        case Diamonds: return "Red";
+        case Clubs: return "Black";
+        case Spades: return "Black";
+    }
+}
+
+var theColor = Suit.Clubs.Color();
+```
+
 Further reading: https://www.tutorialsteacher.com/csharp/csharp-enum
 
 ### Swift
