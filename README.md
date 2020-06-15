@@ -220,7 +220,7 @@ let color = match x with
 Enums can be cast to and from integers.  That also, oddly, allow you to define an enum value that is out of range.
 
 ```f#
-// This is amazingly legal.
+// This is, amazingly, legal.
 let horseshoe = enum<SuitEnum>(5)
 ```
 
@@ -232,6 +232,48 @@ Further reading: https://fsharpforfunandprofit.com/posts/enum-types/
 
 ### C#
 
+C# enums are explicitly just named integer constants, much like in C.  They can be defined within a class like constants, or (I think) stand-alone with a namespace.
+
+```csharp
+enum Suits 
+{
+    Hearts = 0,
+    Diamonds,
+    Clubs,
+    Spades
+}
+```
+
+If a value is not specified, it will be set to the highest existing value + 1.  0 is the default first value but you can set your own.  They are referenced scoped, so `Suits.Diamonds`, `Suits.Spaces`, etc.
+
+Values can also be defined based on other enum values, bitmask style, such as `RedCards = Hearts|Diamonds`.  However, that only works if the explicit values are defined as bit flags.
+
+Enums need to be cast to an integer explicitly in order to use as an int.
+
+```csharp
+Console.WriteLine((int)WeekDays.Monday);
+```
+
+An `Enum` class contains various static methods for manipulating enumerations further.  For instance, to get a list of the names in a given enumeration:
+
+```csharp
+foreach (string str in Enum.GetNames(typeof(WeekDays))) {
+    Console.WriteLine(str);
+}
+```
+
+Or this somewhat crazy way to cast an integer up to an enum member:
+
+```csharp
+WeekDays wdEnum;
+Enum.TryParse<WeekDays>("1", out wdEnum);
+Console.WriteLine(wdEnum);
+```
+
+Further reading: https://www.tutorialsteacher.com/csharp/csharp-enum
 
 ### Swift
+
+
+### Rust
 
