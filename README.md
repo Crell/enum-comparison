@@ -290,6 +290,140 @@ Further reading: https://www.tutorialsteacher.com/csharp/csharp-enum
 
 ### Swift
 
+Swift's enumerations are closer to union types, but still called enumerations.  (Go figure.)  They form a full fledged type with limited legal values.  That means the type has to be capitalized, and teh values not.
+
+```swift
+enum Suit {
+    case hearts
+    case diamonds
+    case clubs
+    case spaces
+}
+// or
+enum Suit {
+    case hearts, diamonds, clubs, spaces
+}
+```
+
+Once defined, values can be defined of that type, and Swift's type inference capability can shorten the syntax somewhat.
+
+```swift
+var card = Suit.clubs
+
+// since card is now bound to the type Suit, you can now do this:
+card = .spades
+```
+
+You can match on an enum value with `switch`, and it must either be exhaustive or have a default:
+
+```swift
+switch card {
+    case .spades:
+        print("The swords of a soldier.")
+    case .clubs:
+        print("Weapons of war.")
+    case .diamonds:
+        print("Money for this art.")
+    default:
+        print("That's not the shape of my heart.")
+}
+```
+
+Enums are not natively iterable, but they can be converted into that easily:
+
+```swift
+enum Suit: CaseIterable {
+    case hearts, diamonds, clubs, spaces
+}
+
+for s in Suit.allCases {
+    print(s)
+}
+```
+
+Swift allows enums to have what it calls "associated values," creating what is variously called a "discriminated union" or "tagged union" depending on whom you ask.  Each value can have its own set of associated values that could be the same or different.
+
+```swift
+case Suit {
+    case hearts(String)
+    case diamonds(String)
+    case clubs(String)
+    case spades(String)
+}
+
+var threeOfDiamonds = Suit.diamond("3")
+```
+
+Each instance of an associated value enum is then not equal to another, even if they're of the same enum value.  Seemingly the only way to get those values back out, though, is with a switch statement and pattern matching:
+
+```swift
+switch card {
+    case .spades(let value):
+        print("The \(value) of Spades")
+    case .clubs(let value):
+        print("The \(value) of Clubs")
+    case let .diamonds(value):
+        print("The \(value) of Diamonds")
+    case let .hearts(value):
+        print("The \(value) of Hearts")
+}
+```
+
+(Those all do the same thing, but digging into the intricacies of Swift's pattern matching is out of scope for now.)
+
+Enums can *also* support "raw values," if specified explicitly, but they must be of the same primitive type:
+
+```swift
+enum Suit: Character {
+    case hearts = "H"
+    case diamonds = "D"
+    case clubs = "C"
+    case spades = "S"
+}
+```
+
+If you list only one raw value, Swift will try to generate a raw value for the rest based on the type used.  It's also possible to initialize an enum case from a raw value, if one was defined:
+
+```swift
+let card = Suit(rawValue: "B")
+```
+
+This actually creates an "optional" of type `Suit?`, meaning it may or may not be legal and you have to explicitly check it.  (Optionals are essentially a syntactic Maybe Monad, and way off topic.)
+
+You can even define an enumeration in terms of itself, which is just all kinds of weird.  From the documentation:
+
+```swift
+    indirect enum ArithmeticExpression {
+        case number(Int)
+        case addition(ArithmeticExpression, ArithmeticExpression)
+        case multiplication(ArithmeticExpression, ArithmeticExpression)
+    }
+```
+
+And they go further by supporting methods on enumerations of all of the above types, the body of which would meaningfully have to be a switch:
+
+```swift
+case Suit {
+    case hearts(String)
+    case diamonds(String)
+    case clubs(String)
+    case spades(String)
+
+    func color: String {
+        switch self {
+            case .hearts: return "Red"
+            case .diamonds: return "Red"
+            case .clubs: return "Black"
+            case .spades: return "Black"
+        }
+    }
+}
+
+print(Suit.clubs("3").color());
+// Prints "Black"
+```
+
+Further reading: https://docs.swift.org/swift-book/LanguageGuide/Enumerations.html
 
 ### Rust
 
