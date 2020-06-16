@@ -197,7 +197,8 @@ It's really hard to explain without going into the whole type system, so I'll st
 ```haskell
 data Suit = Hearts | Diamonds | Clubs | Spades
 ```
-The type "Suit" has only four values, one for each suit.  They are not backed by a primitive value but literally are those values only.  Haskell doesn't have methods as we'd understand them in the OOP world, so methods cannot be attached to them.  The can, however, be used in pattern matching:
+
+The type "Suit" has only four values, one for each suit.  They are not backed by a primitive value but literally are those values only.  Haskell doesn't have methods as we'd understand them in the OOP world, and I've not been able to wrap my brain around Haskell enough to say if you can attach methods consistently to types of an Enum.  The can, however, be used in pattern matching:
 
 ```haskell
 data Color = Red | Black
@@ -547,17 +548,17 @@ Further reading: https://doc.rust-lang.org/rust-by-example/custom_types/enum.htm
 
 ## Summary
 
-Folded into a convenient table, a feature summary would look like this:
+Folded into a convenient table, a feature summary looks like this:
 
 | Language          | C/C++  | Java | Python | Typescript | Haskell | F# (Union) | F# (Enum) |  C#  | Swift | Rust
 |-------------------|--------|------|--------|------------|---------|------------|-----------|------|-------|-----
-| Unit values       | No     |      | No     | No         | Yes     | Yes        | No        | No   | Yes   | Yes
-| Int values        | Yes    |      | Yes    | Yes        | No      | No         | Yes       | Yes  | Yes   | Yes
-| String values     | No     |      | Yes    | Yes        | No      | No         | No        | No   | Yes   | No
-| Associated values | No     |      | No     | No         | Yes     | No         | No        | No   | Yes   | Yes
-| Methods           | No     |      | Yes    | No         | No      | No         | No        | Ish  | Yes   | Yes
-| Type checked      | Ish    |      | No     | Yes        | Yes     | No         | Ish       | Yes  | Yes   | Yes
-| Iterable          | No     |      | Yes    | No         | No      | No         | No        | Yes  | Yes   | No
+| Unit values       | No     | No   | No     | No         | Yes     | Yes        | No        | No   | Yes   | Yes
+| Int values        | Yes    | Yes  | Yes    | Yes        | No      | No         | Yes       | Yes  | Yes   | Yes
+| String values     | No     | No   | Yes    | Yes        | No      | No         | No        | No   | Yes   | No
+| Associated values | No     | No   | No     | No         | Yes     | No         | No        | No   | Yes   | Yes
+| Methods           | No     | Yes  | Yes    | No         | No?     | No         | No        | Ish  | Yes   | Yes
+| Type checked      | Ish    | Yes  | No     | Yes        | Yes     | No         | Ish       | Yes  | Yes   | Yes
+| Iterable          | No     | Yes  | Yes    | No         | No      | No         | No        | Yes  | Yes   | No
 
 In terms of overall capability, Swift appears to have the edge with Rust a very close second.  However, Rust also seems to have more powerful associated values ability (tuples or structs), and the usefulness of iterating enum types is debatable.  I'm going to call it a qualified tie between those two in raw expressive power.
 
@@ -567,3 +568,10 @@ Broadly speaking, I would separate the languages into a few categories:
 * **Fancy Objects**: Python, Java, C#
 * **Algebraic Data Types**: Haskell, Swift, Rust
 
+While they are superficially similar, and often use the same terminology, they approach the problem from different ways.  The Fancy Constants languages are offering a syntactic convenience, but little else.  Often they get compiled away at runtime, and their type checking may be incomplete.
+
+The Fancy Objects languages take that a step further and offer methods on enum types, which offers a centralized place to put a switch, match, or whatever branching syntax for RTTI.  That is helpful, and helps with data modeling in ways that Fancy Constants do not.  If the methods need to vary by enum type more than just a little, though, you run into some contortions and may find yourself better off with normal objects and interfaces.
+
+The main differentiator for ADT languages, as I'm using them here, is that they can be parameterized with different values.  That offers another layer again of potential functionality and data modeling.  It also becomes a natural and easy way to implement Monads in user space, and both Haskell and Rust do exactly that in their core libraries.  (I'm not clear if Swift does, but you can absolutely do so yourself).  That makes them an extremely robust way to handle data modeling in your application, and to "make invalid states unrepresentable," which is an excellent feature if you can get it.
+
+The downside is that once you start parameterizing enum values, you no longer get a guarantee that a Club is a Club is a Club.  They may well be two different Clubs.  The implementation details here around equality (a tricky subject in the best of circumstances) are the devil's hiding place.  The other catch is that, as far as I can tell, no language with parameterized enum values lets you get at them easily without doing pattern matching.  Depending on your use case that may be no big deal or may be a deal-breaker.  In practice I think it largely comes down to how easy the syntax is for pattern matching; Of all things I'd say Haskell is the nicest here, followed by Swift, then Rust.  (Or possibly Rust then Swift, depending on your tastes.  Rust gets very tricky when you have struct-parameterized enums.)
