@@ -330,7 +330,7 @@ Further reading: https://www.tutorialsteacher.com/csharp/csharp-enum
 
 ### Swift
 
-Swift's enumerations are closer to union types, but still called enumerations.  (Go figure.)  They form a full fledged type with limited legal values.  That means the type has to be capitalized, and teh values not.
+Swift's enumerations are closer to union types, but still called enumerations.  (Go figure.)  They form a full fledged type with limited legal values.  That means the type has to be capitalized, and the values not.
 
 ```swift
 enum Suit {
