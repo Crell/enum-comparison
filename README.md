@@ -41,10 +41,15 @@ In Java, enums are, unsurprisingly, a shorthand for classes with class constants
 The simple case looks like this:
 
 ```java
-
+enum Card {
+    HEARTS,
+    DIAMONDS,
+    CLUBS,
+    SPADES
+}
 ```
 
-Enums do not support constructors.  (Or rather, the constructor is private so you cannot pass parameters to it.)
+Enums do not support constructors.  (Or rather, the constructor is private, so you cannot pass parameters to it.)
 
 
 ### Python
@@ -146,9 +151,6 @@ function pickCard(desiredSuit: Suit): Card { }
 
 Further reading: https://www.typescriptlang.org/docs/handbook/enums.html
 
-### Rust
-
-
 ### Haskell
 
 Strictly speaking Haskell doesn't have enums, but the way its type system works gives you something close enough that I'm going to include it.  In Haskell, you define a new data type with the `data` keyword, which can be defined in terms of other data types and type constructors.
@@ -188,7 +190,7 @@ Further reading: https://wiki.haskell.org/Type
 
 F#, in what seems to be a very on-brand move, has both union types *and* enums.  They are very similar but not quite the same thing.
 
-Union types in F# look and act an awful lot like Haskell, including the requierment that the unioned types start with a capital.
+Union types in F# look and act an awful lot like Haskell, including the requirement that the unioned types start with a capital.
 
 ```f#
 type SuitUnion = Hearts | Diamonds | Clubs | Spades
@@ -508,12 +510,23 @@ Further reading: https://doc.rust-lang.org/rust-by-example/custom_types/enum.htm
 
 ## Summary
 
-Language          | C/C++  |
-==================|========|=========
-Unit values       | No     |
-Int values        | Yes    |
-String values     | No     |
-Associated values | No     |
-Methods           | No     |
-Type checked      | Ish    |
+Folded into a convenient table, a feature summary would look like this:
+
+| Language          | C/C++  | Java | Python | Typescript | Haskell | F# (Union) | F# (Enum) |  C#  | Swift | Rust
+|-------------------|--------|------|--------|------------|---------|------------|-----------|------|-------|-----
+| Unit values       | No     |      | No     | No         | Yes     | Yes        | No        | No   | Yes   | Yes
+| Int values        | Yes    |      | Yes    | Yes        | No      | No         | Yes       | Yes  | Yes   | Yes
+| String values     | No     |      | Yes    | Yes        | No      | No         | No        | No   | Yes   | No
+| Associated values | No     |      | No     | No         | Yes     | No         | No        | No   | Yes   | Yes
+| Methods           | No     |      | Yes    | No         | No      | No         | No        | Ish  | Yes   | Yes
+| Type checked      | Ish    |      | No     | Yes        | Yes     | No         | Ish       | Yes  | Yes   | Yes
+| Iterable          | No     |      | Yes    | No         | No      | No         | No        | Yes  | Yes   | No
+
+In terms of overall capability, Swift appears to have the edge with Rust a very close second.  However, Rust also seems to have more powerful associated values ability (tuples or structs), and the usefulness of iterating enum types is debatable.  I'm going to call it a qualified tie between those two in raw expressive power.
+
+Broadly speaking, I would separate the languages into a few categories:
+
+* **Fancy Constants**: C, Typescript, F#
+* **Fancy Objects**: Python, Java, C#
+* **Algebraic Data Types**: Haskell, Swift, Rust
 
