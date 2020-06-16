@@ -394,7 +394,7 @@ case Suit {
 var threeOfDiamonds = Suit.diamond("3")
 ```
 
-Each instance of an associated value enum is then not equal to another, even if they're of the same enum value.  Seemingly the only way to get those values back out, though, is with a switch statement and pattern matching:
+Each instance of an associated value enum is then not equal to another, even if they're of the same enum value.  Seemingly the only way to get those values back out, though, is with pattern matching:
 
 ```swift
 switch card {
