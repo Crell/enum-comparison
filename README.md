@@ -49,7 +49,7 @@ enum Suit {
 }
 ```
 
-Enums do not support constructors.  (Or rather, the constructor is private, so you cannot pass parameters to it.)
+Enums do not support constructors.  (Or rather, the constructor is private, so you cannot pass parameters to it.)  They do, however, support interfaces.
 
 Enum values have a number of methods on them by default to access metadata, including `Suit.valueOf("HEARTS")` (returns "HEARTS") and `Suit.valueOf("HEARTS").ordinal()` (returns 0).
 
