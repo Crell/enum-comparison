@@ -41,7 +41,7 @@ In Java, enums are, unsurprisingly, a shorthand for classes with class constants
 The simple case looks like this:
 
 ```java
-enum Card {
+enum Suit {
     HEARTS,
     DIAMONDS,
     CLUBS,
@@ -51,6 +51,43 @@ enum Card {
 
 Enums do not support constructors.  (Or rather, the constructor is private, so you cannot pass parameters to it.)
 
+Enum values have a number of methods on them by default to access metadata, including `Suit.valueOf("HEARTS")` (returns "HEARTS") and `Suit.valueOf("HEARTS").ordinal()` (returns 0).
+
+The values of an enum can be iterated as a set:
+
+```java
+for (Suit s : Suit.values()){  
+    System.out.println(s);  
+} 
+```
+
+Because they're built on classes, enums can have methods.
+
+```java
+enum Suit {
+  HEARTS,
+  DIAMONDS,
+  CLUBS,
+  SPADES;
+
+  public String color() {
+    switch (this) {
+      case SPADES:
+        return "Swords of a soldier";
+      case CLUBS:
+        return "Weapons of war";
+      case DIAMONDS:
+        return "Money for this art";
+      default:
+        return "Shape of my heart";
+    }
+  }
+}
+```
+
+The switch statement is not exhaustive on enums, however.
+
+Further reading: https://www.javatpoint.com/enum-in-java
 
 ### Python
 

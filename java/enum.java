@@ -1,8 +1,21 @@
 enum Card {
-HEARTS,
-DIAMONDS,
-CLUBS,
-SPADES
+  HEARTS,
+  DIAMONDS,
+  CLUBS,
+  SPADES;
+
+  public String color() {
+    switch (this) {
+      case SPADES:
+        return "Swords of a soldier";
+      case CLUBS:
+        return "Weapons of war";
+      case DIAMONDS:
+        return "Money for this art";
+      default:
+        return "Shape of my heart";
+    }
+  }
 }
 
 class Main {
