@@ -4,7 +4,7 @@
 
 ### C
 
-In C, enumerations are really just a wrapper for named integer constants.  They are defined with the keyword `enum`, often in combination with `typedef`.  For example:
+In C, enumerations are really just a wrapper for named integer constants.  They are defined with the keyword `enum`, usually in combination with `typedef`.  For example:
 
 ```c
 #include<stdio.h>
