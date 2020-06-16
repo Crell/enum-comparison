@@ -1,6 +1,6 @@
+# A survey of programming language enum support
 
-https://twitter.com/Tojiro/status/823286025535393792
-
+## Survey
 
 ### C
 
@@ -575,3 +575,6 @@ The Fancy Objects languages take that a step further and offer methods on enum t
 The main differentiator for ADT languages, as I'm using them here, is that they can be parameterized with different values.  That offers another layer again of potential functionality and data modeling.  It also becomes a natural and easy way to implement Monads in user space, and both Haskell and Rust do exactly that in their core libraries.  (I'm not clear if Swift does, but you can absolutely do so yourself).  That makes them an extremely robust way to handle data modeling in your application, and to "make invalid states unrepresentable," which is an excellent feature if you can get it.
 
 The downside is that once you start parameterizing enum values, you no longer get a guarantee that a Club is a Club is a Club.  They may well be two different Clubs.  The implementation details here around equality (a tricky subject in the best of circumstances) are the devil's hiding place.  The other catch is that, as far as I can tell, no language with parameterized enum values lets you get at them easily without doing pattern matching.  Depending on your use case that may be no big deal or may be a deal-breaker.  In practice I think it largely comes down to how easy the syntax is for pattern matching; Of all things I'd say Haskell is the nicest here, followed by Swift, then Rust.  (Or possibly Rust then Swift, depending on your tastes.  Rust gets very tricky when you have struct-parameterized enums.)
+
+
+https://twitter.com/Tojiro/status/823286025535393792
