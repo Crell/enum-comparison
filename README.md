@@ -409,6 +409,14 @@ switch card {
 }
 ```
 
+For one-off cases, you can use `if let`.
+
+```swift
+if case let .clubs(val) = card {
+    print ("The \val of Clubs")
+}
+```
+
 (Those all do the same thing, but digging into the intricacies of Swift's pattern matching is out of scope for now.)
 
 Enums can *also* support "raw values," if specified explicitly, but they must be of the same primitive type:
@@ -510,12 +518,16 @@ Enum values can be referenced scoped from their type, `Suit::Heart`, or first im
 Enums are almost always used with either `match` or `if let`, the latter of which being a sort of inverted way to care about only a single branch of a match.  The `match` version must be exhaustive or have a default.
 
 ```rust
-let msg = match self {
-    Self::Spades => "Swords of a soldier".to_string(),
-    Self::Clubs => "Weapons of war".to_string(),
-    Self::Diamonds => "Money for this art".to_string(),
+let msg = match card {
+    Card::Spades => "Swords of a soldier".to_string(),
+    Card::Clubs => "Weapons of war".to_string(),
+    Card::Diamonds => "Money for this art".to_string(),
     _ => "Shape of my heart".to_string(),
-},
+};
+
+if let Diamonds(val) = card {
+    println!("{} diamonds are a girl's best friend", val)
+}
 ```
 
 The only way to extract associated values out of the enum is with pattern matching, which in Rust is almost absurdly robust:
