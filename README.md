@@ -519,9 +519,9 @@ Enums are almost always used with either `match` or `if let`, the latter of whic
 
 ```rust
 let msg = match card {
-    Card::Spades => "Swords of a soldier".to_string(),
-    Card::Clubs => "Weapons of war".to_string(),
-    Card::Diamonds => "Money for this art".to_string(),
+    Suit::Spades => "Swords of a soldier".to_string(),
+    Suit::Clubs => "Weapons of war".to_string(),
+    Suit::Diamonds => "Money for this art".to_string(),
     _ => "Shape of my heart".to_string(),
 };
 
