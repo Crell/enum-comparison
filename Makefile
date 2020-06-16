@@ -1,9 +1,9 @@
 
-all: c java python
+all: c java python rust
 
-.PHONY: c java python
+.PHONY: c java python rust
 
-clean: clean-c clean-java
+clean: clean-c clean-java clean-rust
 
 c: c/main.c
 	cd c && \
@@ -25,3 +25,11 @@ clean-java:
 python:
 	cd python && \
 	python3 enumtest.py
+
+rust:
+	cd rust && \
+	cargo run
+
+clean-rust:
+	cd rust && \
+	cargo clean

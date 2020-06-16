@@ -427,3 +427,93 @@ Further reading: https://docs.swift.org/swift-book/LanguageGuide/Enumerations.ht
 
 ### Rust
 
+As Rust's main syntactic goal seems to have been "Haskell, but with lots of curly braces," the language supports enumerations with and without associated values, either positional or named.  
+
+All of the following are legal:
+
+```rust
+// The values themselves.
+enum Suit {
+    Hearts,
+    Diamonds,
+    Clubs,
+    Spades,
+}
+
+// With one or more tuple associated values.
+enum Card {
+    Hearts(i8),
+    Diamonds(i8),
+    Clubs(i8),
+    Spades(i8),
+}
+
+// With one or more struct-associated values.
+enum Card {
+    Hearts{val: i8},
+    Diamonds{val: i8},
+    Clubs{val: i8},
+    Spades{val: i8},
+}
+
+// With an integer (only) explicit value.
+enum Suit {
+    Hearts = 3,
+    Diamonds = 4,
+    Clubs = 5,
+    Spades = 6,
+}
+```
+
+Enum values can be referenced scoped from their type, `Suit::Heart`, or first imported with `use Suit::*` and then used unqualified.  Because they're a full type, they can be used in function signatures.
+
+Enums are almost always used with either `match` or `if let`, the latter of which being a sort of inverted way to care about only a single branch of a match.  The `match` version must be exhaustive or have a default.
+
+```rust
+let msg = match self {
+    Self::Spades => "Swords of a soldier".to_string(),
+    Self::Clubs => "Weapons of war".to_string(),
+    Self::Diamonds => "Money for this art".to_string(),
+    _ => "Shape of my heart".to_string(),
+},
+```
+
+The only way to extract associated values out of the enum is with pattern matching, which in Rust is almost absurdly robust:
+
+```rust
+use Card::*;
+let the_val = match Card {
+    Clubs(x) | Hearts(x) | Spades(x) | Diamonds(x) => x
+};
+```
+
+As it's a full type, it can also have methods.  Or in Rust-speak, "implementations," including of traits (what most languages would call an interface).  They can do pretty much everything a `struct` can.  Their body will in most cases be just a bit `match`.
+
+```rust
+impl Suit {
+    fn color(&self) -> String {
+        match self {
+            Self::Hearts => "Red".to_string(),
+            Self::Diamonds => "Red".to_string(),
+            Self::Clubs => "Black".to_string(),
+            Self::Spades => "Black".to_string(),
+        }
+    }
+}
+```
+
+(The capitalized `Self` in this case is an implicit alias to `Suit`.)
+
+Further reading: https://doc.rust-lang.org/rust-by-example/custom_types/enum.html
+
+## Summary
+
+Language          | C/C++  |
+==================|========|=========
+Unit values       | No     |
+Int values        | Yes    |
+String values     | No     |
+Associated values | No     |
+Methods           | No     |
+Type checked      | Ish    |
+
