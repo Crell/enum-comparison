@@ -644,26 +644,72 @@ var result = when (card) {
 
 Further reading: https://blog.kotlin-academy.com/enum-vs-sealed-class-which-one-to-choose-dc92ce7a4df5
 
+### Scala
+
+Scala enums are also built on objects.
+
+```scala
+package com.crell.poker {
+    object Suit extends Enumeration {
+        type Suit = Value
+        val HEARTS, DIAMONDS, CLUBS, SPADES = Value
+    }
+}
+
+// ...
+object Main extends App {
+    import com.crell.poker.Suit._
+
+    var s = CLUBS
+
+    // Iteration
+    Suit.values foreach println
+}
+
+```
+
+They can carry values, including multiple values, which must be pre-set and not vary by instance.  They also can support methods that way, although my Scala-fu is not strong enough to know if my syntax here is entirely correct. :-)
+
+```scala
+object Suit extends Enumeration {
+    protected case class Val(abbrev: String) extends super.Val {
+        def color: String = abbrev.match {
+            case Suit.HEARTS => "Red"
+            case Suit.DIAMONDS => "Red"
+            case Suit.CLUBS => "Black"
+            case Suit.SPADES => "Black"
+        }
+    }
+    type Suit = Value
+    val HEARTS = Val("H")
+    val DIAMONDS = Val("D")
+    val CLUBS = Val("C")
+    val SPADES = Val("S")
+}
+```
+
+Further reading: https://www.scala-lang.org/api/current/scala/Enumeration.html
+
 ## Summary
 
 Folded into a convenient table, a feature summary looks like this:
 
 | Language          | C/C++  | Java | Python | Typescript | Haskell | F# (Union) | F# (Enum) |  C#  | Swift | Rust | Kotlin (Enums) | Kotlin (Sealed) | Scala
 |-------------------|--------|------|--------|------------|---------|------------|-----------|------|-------|------|----------------|-----------------|-------
-| Unit values       | No     | No   | No     | No         | Yes     | Yes        | No        | No   | Yes   | Yes  | Yes            | Ish?            |
-| Int values        | Yes    | Yes  | Yes    | Yes        | No      | No         | Yes       | Yes  | Yes   | Yes  | Yes            | Ish?            |
-| String values     | No     | No   | Yes    | Yes        | No      | No         | No        | No   | Yes   | No   | Yes            | Ish?            |
-| Associated values | No     | No   | No     | No         | Yes     | No         | No        | No   | Yes   | Yes  | No             | Yes             |
-| Methods           | No     | Yes  | Yes    | No         | No?     | No         | No        | Ish  | Yes   | Yes  | Yes            | Yes             |
-| Type checked      | Ish    | Yes  | No     | Yes        | Yes     | No         | Ish       | Yes  | Yes   | Yes  | Yes            | Yes             |
-| Iterable          | No     | Yes  | Yes    | No         | No      | No         | No        | Yes  | Yes   | No   | Yes            | No              |
+| Unit values       | No     | No   | No     | No         | Yes     | Yes        | No        | No   | Yes   | Yes  | Yes            | Ish?            | Yes
+| Int values        | Yes    | Yes  | Yes    | Yes        | No      | No         | Yes       | Yes  | Yes   | Yes  | Yes            | Ish?            | Yes
+| String values     | No     | No   | Yes    | Yes        | No      | No         | No        | No   | Yes   | No   | Yes            | Ish?            | Yes
+| Associated values | No     | No   | No     | No         | Yes     | No         | No        | No   | Yes   | Yes  | No             | Yes             | No
+| Methods           | No     | Yes  | Yes    | No         | No?     | No         | No        | Ish  | Yes   | Yes  | Yes            | Yes             | Yes
+| Type checked      | Ish    | Yes  | No     | Yes        | Yes     | No         | Ish       | Yes  | Yes   | Yes  | Yes            | Yes             | Yes?
+| Iterable          | No     | Yes  | Yes    | No         | No      | No         | No        | Yes  | Yes   | No   | Yes            | No              | No
 
 In terms of overall capability, Swift appears to have the edge with Rust a very close second.  However, Rust also seems to have more powerful associated values ability (tuples or structs), and the usefulness of iterating enum types is debatable.  I'm going to call it a qualified tie between those two in raw expressive power.
 
 Broadly speaking, I would separate the languages into a few categories:
 
 * **Fancy Constants**: C, Typescript, F#
-* **Fancy Objects**: Python, Java, C#
+* **Fancy Objects**: Python, Java, C#, Scala
 * **Algebraic Data Types**: Haskell, Swift, Rust, Kotlin
 
 While they are superficially similar, and often use the same terminology, they approach the problem from different ways.  The Fancy Constants languages are offering a syntactic convenience, but little else.  Often they get compiled away at runtime, and their type checking may be incomplete.
