@@ -1,5 +1,15 @@
 # A survey of programming language enum support
 
+## Introduction
+
+As of mid-2020, there is some discussion of adding enumerations (enums) to PHP.  There are many good reasons to do so, most around enabling better data modeling and type checking, but that doesn't suggest how to do it.  Enumerations in practice refer to a very wide range of functionality depending on the language, from barely above constants to a core part of the type system.
+
+As I am wont to do, I decided the best thing to do would be to survey the existing marketplace and see what other languages did, and what we can steal outright.  (As the saying goes, "PHP evolves by beating up other languages in dark alleys and going through their pockets for loose syntax.")  I therefore looked at 11 different languages with some kind of native enumeration support.  The survey below is intended as a reasonably fair overview and summary of the available languages.  My own thoughts and analysis are included at the end.  For some languages I have included runnable sample code in the appropriate subdirectory.  Whether or not there is sample code depends primarily on whether I had a runtime for the language already installed.
+
+I deliberately excluded languages with no native enum support.  Languages such as Javascript, Go, or Ruby do not (as far as I can tell) have any native enumerations, although there are various hacky ways to simulate them in user space.  That is not of interest to us at this time.
+
+If you spot any errors in the survey below, please let me know.
+
 ## Survey
 
 ### C
@@ -665,7 +675,6 @@ object Main extends App {
     // Iteration
     Suit.values foreach println
 }
-
 ```
 
 They can carry values, including multiple values, which must be pre-set and not vary by instance.  They also can support methods that way, although my Scala-fu is not strong enough to know if my syntax here is entirely correct. :-)
@@ -706,6 +715,8 @@ Folded into a convenient table, a feature summary looks like this:
 
 In terms of overall capability, Swift appears to have the edge with Rust a very close second.  However, Rust also seems to have more powerful associated values ability (tuples or structs), and the usefulness of iterating enum types is debatable.  I'm going to call it a qualified tie between those two in raw expressive power.
 
+## Analysis
+
 Broadly speaking, I would separate the languages into a few categories:
 
 * **Fancy Constants**: C, Typescript, F#
@@ -720,5 +731,42 @@ The main differentiator for ADT languages, as I'm using them here, is that they 
 
 The downside is that once you start parameterizing enum values, you no longer get a guarantee that a Club is a Club is a Club.  They may well be two different Clubs.  The implementation details here around equality (a tricky subject in the best of circumstances) are the devil's hiding place.  The other catch is that, as far as I can tell, no language with parameterized enum values lets you get at them easily without doing pattern matching.  Depending on your use case that may be no big deal or may be a deal-breaker.  In practice, I think it largely comes down to how easy the syntax is for pattern matching; Of all things I'd say Haskell is the nicest here, followed by Swift, then Rust.  (Or possibly Rust then Swift, depending on your tastes.  Rust gets very tricky when you have struct-parameterized enums.)
 
+## For PHP
+
+As far as borrowing ideas for a PHP implementation, it seems silly at this point to not go all the way to ADT support if possible.  "If possible" being the operative phrase, as PHP also lacks relevant features that some ADT languages use for their enums, such as pattern matching.  In practice, I believe the only question is between Fancy Objects and ADTs.
+
+The main implementation questions would be:
+
+### Backed by objects, or a new primitive?
+
+In practice, I see little reason to not build on objects.  They're already there, and if we want methods and associated data and type checking then you're already 90% to objects.  Most of the ADT implementations above build on objects, either implicitly or explicitly.
+
+### Enums, Unions, or Sealed classes?
+
+The majority of ADT/fancy class languages here use a dedicated enum syntax of some variety.  The exceptions are Kotlin's sealed classes and Haskell's union types, which are not strictly speaking enums but close enough.
+
+It has been suggested that the addition of a `typedef` to PHP to allow pre-definition of union types (already added in PHP 8.0, coming soon) would be "close enough" to enums to render any further effort unnecessary.  That is true up to a point; the main limitation would be no way to enforce that all of the unioned types are type compatible: that they share an interface that makes it possible to type against them properly.  It would also make the degenerate case of "I just want a closed list of options" more verbose.
+
+```php
+typedef Suit = Hearts | Diamonds | Clubs | Spades;
+
+// This is just weird
+interface SuitInterface {}
+
+class Hearts implements SuitInterface {}
+class Diamonds implements SuitInterface {}
+class Clubs implements SuitInterface {}
+class Spades implements SuitInterface {}
+```
+
+Sealed classes would look essentially the same, give or take some syntax.  Ideally we want an approach that "scales" cleanly from the basic case to the highly complex case.  I think a properly designed dedicated Enum syntax is the best way to achieve that (even if it's just syntactic sugar that decomposes to the same as above).
+
+### What types of values?
+
+There are largely 3 types of "single associated value" that enums can have: Unit (just the enum itself), Int only, or any primitive.  The latter two get tricky if implemented as objects in PHP, unless it's just still-more sugar.  I think Kotlin has the right idea here, though; Rather than giving an enum value its own direct primitive equivalent, make that a constant associated value.  That is, no, you cannot define "Diamonds" to be equal to 3, but you can define "Diamonds" to be an object with a single property whose value is always 6.
+
+### Equality
+
+This one gets really tricky, as equality is troublesome at the best of times.
 
 https://twitter.com/Tojiro/status/823286025535393792
