@@ -986,7 +986,7 @@ As demonstrated above, whether a method is single-instanced and checks for the e
 
 The main enum may also implement interfaces if desired, in which case all the usual rules about inheritance and interfaces apply.
 
-Implications:
+##### Implications
 
 * Most existing plumbing for classes and objects applies to enums if needed.  They behave in a mostly predictable fashion.  That includes being able to autoload the enum itself.  If and when named parameters are adopted, creating a new associated-data enum member will automatically support that syntax.
 * While value-bound enums are not technically supported, the approach above combind with the `__toString()` method offer a "close enough" equivalent.
@@ -996,7 +996,7 @@ Implications:
 * Presumably Enums and Members could support attributes.  What you would do with them I do not know, but I see no reason to not allow them.
 * The existence of a base `Enum` class gives us a place to put future extensions or functionality, such as a default `__serialize`, `__debugInfo`, or other such magic method implementations.
 
-Open questions:
+#### Open questions
 
 * As shown here, enum members end up as public static class properties.  That is suboptimal.  Ideally they would be be write-once and exposed as though they were constants.  This may be something that can be special cased in the engine.
 * It's unclear how to handle `instanceof` and references to the class.  If implemented as pure sugar, that means members do become their own stand-alone objects and you'd do `$c instance of Diamonds`.  That is suboptimal.  It would be preferable to always make the name scoped to the enum itself, ie, `$c instanceof Suit::Diamonds`.  However, it's unclear how that would interact with the `Diamonds()` member itself or with the static factory method in the case of associated data.  This requires more investigation and possibly engine trickry.
