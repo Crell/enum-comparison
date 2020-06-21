@@ -726,7 +726,7 @@ Folded into a convenient table, a feature summary looks like this:
 |-------------------|--------|------|--------|------------|---------|------------|-----------|------|-------|------|----------------|-----------------|-------
 | Unit values       | No     | No   | No     | No         | Yes     | Yes        | No        | No   | Yes   | Yes  | Yes            | Ish?            | Yes
 | Int values        | Yes    | Yes  | Yes    | Yes        | No      | No         | Yes       | Yes  | Yes   | Yes  | Yes            | Ish?            | Yes
-| String values     | No     | No   | Yes    | Yes        | No      | No         | No        | No   | Yes   | No   | Yes            | Ish?            | Yes
+| String values     | No     | Yes  | Yes    | Yes        | No      | No         | No        | No   | Yes   | No   | Yes            | Ish?            | Yes
 | Associated values | No     | No   | No     | No         | Yes     | No         | No        | No   | Yes   | Yes  | No             | Yes             | No
 | Methods           | No     | Yes  | Yes    | No         | No?     | No         | No        | Ish  | Yes   | Yes  | Yes            | Yes             | Yes
 | Type checked      | Ish    | Yes  | No     | Yes        | Yes     | No         | Ish       | Yes  | Yes   | Yes  | Yes            | Yes             | Yes?
