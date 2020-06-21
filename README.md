@@ -59,8 +59,6 @@ enum Suit {
 }
 ```
 
-Enums do not support constructors.  (Or rather, the constructor is private, so you cannot pass parameters to it.)  They do, however, support interfaces.
-
 Enum values have a number of methods on them by default to access metadata, including `Suit.valueOf("HEARTS")` (returns "HEARTS") and `Suit.valueOf("HEARTS").ordinal()` (returns 0).
 
 The values of an enum can be iterated as a set:
@@ -96,6 +94,27 @@ enum Suit {
 ```
 
 The switch statement is not exhaustive on enums, however.
+
+Enum constructors are always private, so they can only be called from the definition of enum members.  They also support interfaces.
+
+```java
+enum Suit {
+    HEARTS("H"),
+    DIAMONDS("D"),
+    CLUBS("C"),
+    SPADES("S");
+
+    private String abbrev;
+
+    Suit(String abbrev) {
+        this.abbrev = abbrev;
+    }
+
+    String shortName() {
+        return abbrev;
+    }
+}
+```
 
 Further reading: https://www.javatpoint.com/enum-in-java
 
