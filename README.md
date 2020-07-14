@@ -608,7 +608,7 @@ Each enum value is technically a "constant object."  By default they're bare, bu
 enum class Suit(val abbrev: String) {
     HEARTS("H"),
     DIAMONDS("D"),
-    CLUBS(C"),
+    CLUBS("C"),
     SPADES("S")
 }
 ```
