@@ -12,6 +12,18 @@ If you spot any errors in the survey below, please let me know.
 
 ## Survey
 
+- [C](#c)
+- [Java](#java)
+- [Python](#python)
+- [Typescript](#typescript)
+- [Haskell](#haskell)
+- [F#](#f)
+- [C#](#c-1)
+- [Swift](#swift)
+- [Rust](#rust)
+- [Kotlin](#kotlin)
+- [Scala](#scala)
+
 ### C
 
 In C, enumerations are really just a wrapper for named integer constants.  They are defined with the keyword `enum`, usually in combination with `typedef`.  For example:
