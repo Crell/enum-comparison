@@ -13,6 +13,7 @@ If you spot any errors in the survey below, please let me know.
 ## Survey
 
 - [C](#c)
+- [C++](#c++)
 - [Java](#java)
 - [Python](#python)
 - [Typescript](#typescript)
@@ -37,7 +38,7 @@ void printer(Day d) {
   printf("The day is: %d\n", d);
 }
 
-int main() {
+int main(void) {
   Day d = Tuesday;
 
   printer(d);
@@ -54,6 +55,45 @@ typedef enum {
   Failed = 5,
   Busted = 5;
 } Status;
+```
+
+Note that even though `d` is of `Day` type, the enum constant `Tuesday` is defined in the **global** scope.  That is, the following code does not compile, as `Monday` is defined twice.
+
+```c
+typedef enum { Tuesday = 1, Monday, Wednesday } WeirdDays;
+typedef enum { Monday, Tuesday, Wednesday } Day;
+```
+
+### C++
+
+C++ is backwards-compatible with C, so the [previous section](#c) applies.  In addition, starting with C++11, scoped enumerations (defined with `enum struct` or `enum class`) have been introduced.
+
+The enums are defined the same way as in C (so individual enumerators' values can be specified, etc.).  There is no automatic conversion from the scoped enum type to the underlying integer type.
+
+*Note:* Even though the defining keywords are `enum struct`, the type itself does not behave like a `struct`: no fields or member methods can be defined!
+
+```cpp
+#include <iostream>
+
+typedef enum { Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday } Day;
+enum struct ScopedDay { Monday = 9, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday };
+
+void printer(Day d) {
+  std::cout << "The classical day is " << d << '\n';
+}
+
+void printer(ScopedDay d) {
+  std::cout << "The scoped day is " << static_cast<int>(d) << '\n';
+}
+
+int main() {
+  Day       d1 = Tuesday;
+  ScopedDay d2 = ScopedDay::Tuesday;
+
+  printer(d1); //  1
+  printer(d2); // 10
+  return 0;
+}
 ```
 
 ### Java
