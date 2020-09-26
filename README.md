@@ -70,7 +70,7 @@ C++ is backwards-compatible with C, so the [previous section](#c) applies.  In a
 
 The enums are defined the same way as in C (so individual enumerators' values can be specified, etc.).  There is no automatic conversion from the scoped enum type to the underlying integer type.
 
-*Note:* Even though the defining keywords are `enum struct`, the type itself does not behave like a `struct`: no fields or member methods can be defined!
+*Note:* Even though the defining keywords are `enum struct`, the type itself does not behave like a `struct`: no fields or member methods can be defined.
 
 ```cpp
 #include <iostream>
