@@ -4,7 +4,7 @@
 
 As of mid-2020, there is some discussion of adding enumerations (enums) to PHP.  There are many good reasons to do so, most around enabling better data modeling and type checking, but that doesn't suggest how to do it.  Enumerations in practice refer to a very wide range of functionality depending on the language, from barely above constants to a core part of the type system.
 
-As I am wont to do, I decided the best thing to do would be to survey the existing marketplace and see what other languages did, and what we can steal outright.  (As the saying goes, "PHP evolves by beating up other languages in dark alleys and going through their pockets for loose syntax.")  I therefore looked at 11 different languages with some kind of native enumeration support.  The survey below is intended as a reasonably fair overview and summary of the available languages.  My own thoughts and analysis are included at the end.  For some languages I have included runnable sample code in the appropriate subdirectory.  Whether or not there is sample code depends primarily on whether I had a runtime for the language already installed.
+As I am wont to do, I decided the best thing to do would be to survey the existing marketplace and see what other languages did, and what we can steal outright.  (As the saying goes, "PHP evolves by beating up other languages in dark alleys and going through their pockets for loose syntax.")  I therefore looked at 12 different languages with some kind of native enumeration support.  The survey below is intended as a reasonably fair overview and summary of the available languages.  My own thoughts and analysis are included at the end.  For some languages I have included runnable sample code in the appropriate subdirectory.  Whether or not there is sample code depends primarily on whether I had a runtime for the language already installed.
 
 I deliberately excluded languages with no native enum support.  Languages such as Javascript, Go, or Ruby do not (as far as I can tell) have any native enumerations, although there are various hacky ways to simulate them in user space.  That is not of interest to us at this time.
 
@@ -13,6 +13,7 @@ If you spot any errors in the survey below, please let me know.
 ## Survey
 
 - [C](#c)
+- [C++](#c++)
 - [Java](#java)
 - [Python](#python)
 - [Typescript](#typescript)
@@ -37,7 +38,7 @@ void printer(Day d) {
   printf("The day is: %d\n", d);
 }
 
-int main() {
+int main(void) {
   Day d = Tuesday;
 
   printer(d);
@@ -54,6 +55,45 @@ typedef enum {
   Failed = 5,
   Busted = 5;
 } Status;
+```
+
+Note that even though `d` is of `Day` type, the enum constant `Tuesday` is defined in the **global** scope.  That is, the following code does not compile, as `Monday` is defined twice.
+
+```c
+typedef enum { Tuesday = 1, Monday, Wednesday } WeirdDays;
+typedef enum { Monday, Tuesday, Wednesday } Day;
+```
+
+### C++
+
+C++ is backwards-compatible with C, so the [previous section](#c) applies.  In addition, starting with C++11, scoped enumerations (defined with `enum struct` or `enum class`) have been introduced.
+
+The enums are defined the same way as in C (so individual enumerators' values can be specified, etc.).  There is no automatic conversion from the scoped enum type to the underlying integer type.
+
+*Note:* Even though the defining keywords are `enum struct`, the type itself does not behave like a `struct`: no fields or member methods can be defined.
+
+```cpp
+#include <iostream>
+
+typedef enum { Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday } Day;
+enum struct ScopedDay { Monday = 9, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday };
+
+void printer(Day d) {
+  std::cout << "The classical day is " << d << '\n';
+}
+
+void printer(ScopedDay d) {
+  std::cout << "The scoped day is " << static_cast<int>(d) << '\n';
+}
+
+int main() {
+  Day       d1 = Tuesday;
+  ScopedDay d2 = ScopedDay::Tuesday;
+
+  printer(d1); //  1
+  printer(d2); // 10
+  return 0;
+}
 ```
 
 ### Java
