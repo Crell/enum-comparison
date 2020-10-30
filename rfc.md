@@ -8,11 +8,11 @@
 
 ## Introduction
 
-This RFC introduces Enumerations to PHP. Specifically, it introduces what are variously called "Algebraic Data Types", "tagged unions", or simply "enumerations" depending on the language. This capability offers greatly expanded support for data modeling, custom type definitions, and monad-style behavior. Enums enable the modeling technique of "make invalid states unrepresentable", which leads to more robust code with less need for exhaustive testing.
+This RFC introduces Enumerations to PHP. Specifically, it introduces what are variously called "Algebraic Data Types", "tagged unions", or simply "enumerations" depending on the language. This capability offers greatly expanded support for data modeling, custom type definitions, and monad-style behavior. Enums enable the modeling technique of "make invalid states unrepresentable," which leads to more robust code with less need for exhaustive testing.
 
 Many languages have support for enumerations of some variety. A [survey we conducted of various languages](https://github.com/Crell/enum-comparison) found that they could be categorized into three general groups: Fancy Constants, Fancy Objects, and full Algebraic Data Types. For this implementation we opted to implement full Algebraic Data Types, as that offers the most robust set of functionality while also degrading gracefully to simpler use cases. (Or it progressively enhances to more complex use cases, depending on your point of view.)
 
-The specific implementation here draws inspiration primarily from Swift, Rust, and Kotlin, but is not (nor is it intended as) a perfect 1:1 port of any of them.
+The specific implementation here draws inspiration primarily from Swift, Rust, and Kotlin, but is not (nor is it intended as) a perfect 1:1 port of any of them.  Enumerations take many forms depending on the language, and we opted to implement the most robust combination of functionality feasible.  Every piece of functionality described here exists in a similar form in at least one, usually several, other enumeration-supporting languages.  It is implemented as a single RFC rather than a series of RFCs as the functionality all inter-relates, and if full ADTs are the goal (as we believe they should be) then it's easier to implement them at once rather than to dribble-in functionality in potentially disjoint pieces.
 
 The most popular case of enumerations is `boolean`, which is an enumerated type with legal values `true` and `false`. This RFC allows developers to define their own arbitrarily robust enumerations.
 
@@ -66,25 +66,6 @@ $a instanceof Suit;         // true
 $a instanceof Suit::Spades; // true
 ```
 
-[Note to Ilija: The last line there is the tricksy one we haven't figured out.]
-
-Each Case class includes a default `__toString()` implementation that returns the name of the Case as a string, without the Enum type. That is:
-
-```php
-print Suit::Clubs; 
-// prints "Clubs", not "Suit::Clubs".
-```
-
-That function may be overridden if desired. (See below.)
-
-[To Ilija: Do we want this part or not?  I only thought of it while writing this. I don't know if it's good or bad.]
-
-Enumerated type Cases may be used in union type definitions. For example:
-
-```php
-function gimmie_red_card(Suit::Hearts|Suit::Diamonds $card) { ... }
-```
-
 ### Enumerated Case Methods
 
 As both Enum Types and Enum Cases are implemented using classes, they may take methods. The Enum Type may also implement an interface, which all Cases must then fulfill, directly or indirectly.
@@ -135,7 +116,7 @@ Enum Cases may not implement interfaces themselves.
 
 Static methods on Cases are not supported. Static methods on the Enum Type are supported.
 
-[Ilija: We haven't discussed static methods at all. This is what makes the most sense to me at the moment but we can easily revisit this. I'm flexible.)
+(Ilija: We haven't discussed static methods at all. This is what makes the most sense to me at the moment but we can easily revisit this. I'm flexible.)
 
 Inside a method on a Case, The `$this` variable is defined and refers to the Case instance. (That is mainly useful with Associated Values. See below.)
 
@@ -179,9 +160,72 @@ class Spades extends Suit {
 }
 ```
 
+### Value listing
+
+The enumeration itself has an automatically generated static method `values()`.  `values()` returns an indexed array of all defined Cases in lexical order.
+
+```php
+Suit::values();
+// Produces: [Suit::Hearts, Suit::Diamonds, Suit::Clubs, Suit:Spades]
+```
+
+### Primitive-Equivalent Cases
+
+By default, Enumerated Cases have no primitive equivalent.  They are simply singleton objects.  However, there are ample cases where an Enumerated Case needs to be able to round-trip to a database or similar datastore, so having a built-in primitive (and thus trivially serializable) equivalent defined intrinsically is useful.
+
+To define a primitive equivalent for an Enumeration, the syntax is as follows:
+
+```php
+enum Suit: string {
+  case Hearts('H');
+  case Diamonds('D');
+  case Clubs('C');
+  case Spades('S');
+}
+```
+
+Primitive backing types of `int`, `string`, or `float` are supported, and a given enumeration supports only a single type at a time.  (That is, no union of `int|string`.)  If an enumeration is marked as having a primitive equivalent, then all cases must have a unique primitive equivalent defined.
+
+A Primitive-Equivalent Case will automatically down-cast to its primitive when used in a primitive context.  For example, when used with `print`.  
+
+```php
+print Suit::Clubs;
+// prints "C"
+print "I hope I draw a " . Suit::Spades;
+// prints "I hope I draw a S".
+```
+
+Passing a Primitive Case to a primitive-typed parameter or return will produce the primitive value in weak-typing mode, and produce a `TypeError` in strict-typing mode.
+
+A Primitive-Backed enumeration also has a static method `from()` that is automatically generated.  The `from()` method will up-cast from a primitive to its corresponding Enumerated Case.  Invalid primitives with no matching Case will throw a `TypeError`.
+
+```php
+$record = get_stuff_from_database($id);
+print $record['suit'];
+// Prints "H"
+$suit = Suit::from($record['suit']);
+$suit === Suit::Hearts; // True
+```
+
+A Primitive-Backed enumeration additionally has a method `list()` that returns an associated array of cases, in lexical order, keyed by their primitive equivalent.
+
+```php
+$list = Suit::list();
+$list === [
+'H' => Suit::Hearts,
+'D' => Suit::Diamonds,
+'C' => Suit::Clubs,
+'S' => Suit::Spades,
+]; // true
+```
+
+Primitive-backed Cases are not allowed to define a `__toString()` method, as that would create confusion with the primitive value itself.
+
 ### Associated Values
 
 Enumerated Cases may optionally include associated values. An associated value is one that is associated with an instance of a Case. If a Case has associated values, it will **not** be implemented as a singleton. Each instance of the Case will then be its own object instance, so will not === another instance.
+
+Associated values are mutually exclusive with Primitive-Equivalent Cases.
 
 Associated values are defined using constructor property promotion.
 
@@ -202,11 +246,13 @@ $my_walk === $next_walk; // FALSE!
 
 Enum Cases may not implement a full constructor. However, they may list parameters that will be auto-promoted to properties using constructor promotion. The visibility modifier is required. Cases may not implement properties other than promoted properties.
 
-An Enum Case that supports Associated Values is called an Associable Case. An Enum Case that does not have Associated Values is called a Unit Case. An Enumerated Type may consist of any combination of Associable and Unit Cases.
+An Enum Case that supports Associated Values is called an Associable Case. An Enum Case that does not have Associated Values is called a Unit Case. An Enumerated Type may consist of any combination of Associable and Unit Cases, but no Primitive-Equivalent Cases.
 
 The Enum Type itself may not define associated values. Only a Case may do so.
 
 Associated values are always read-only, both internally to the class and externally. Therefore, making them public does not pose a risk of 3rd party code modifying them inadvertently. They may, however, have attributes associated with them like any other property.
+
+On an Associable Case enumeration, the `values()` method is not available and will throw a `TypeError`.  Since Associable Cases are technically unbounded, the method has no logical sense.
 
 Use cases that would require more complete class functionality (arbitrary properties, custom constructors, mutable properties, etc.) should be implemented using traditional classes instead.
 
@@ -236,7 +282,7 @@ $str = match type ($val) {
 }
 ```
 
-[Ilija, your thoughts on this?]
+(Ilija, your thoughts on this?)
 
 ### Examples
 
@@ -254,7 +300,7 @@ enum Maybe {
       return $this;
     }
   };
-    
+
   // This is an Associable Case.
   case Some(private mixed $value) {
     // Note that the return type can be the Enum itself, thus restricting the return
@@ -298,7 +344,7 @@ enum OvenStatus {
 }
 ```
 
-In this example, the oven can be in one of three states (Off, On, and Idling, meaning the flame is not on but it will turn back on when it detects it needs to). However, it can never go from Off to Idle or Idle to Off; it must go through On state first. That means no tests need to be written or code paths defined for going from Off to Idle, because it's literally impossible to even describe that state.
+In this example, the oven can be in one of three states (Off, On, and Idling, meaning the flame is not on, but it will turn back on when it detects it needs to). However, it can never go from Off to Idle or Idle to Off; it must go through On state first. That means no tests need to be written or code paths defined for going from Off to Idle, because it's literally impossible to even describe that state.
 
 (Additional methods are of course likely in a real implementation.)
 
@@ -322,13 +368,9 @@ This is not a specific design goal of the implementation, but a potentially usef
 
 ## Backward Incompatible Changes
 
-"enum" becomes a language keyword, with the usual potential for naming conflicts with existing global constants.
+"enum" and "type" become language keywords, with the usual potential for naming conflicts with existing global constants.
 
 ## Future Scope
-
-### Case enumeration
-
-In some languages, it is possible to enumerate all possible values of an Enum Type. For now that functionality is not implemented, but it may be in the future. It would be limited to the case where the Enum Type contains only Unit Values. (That limitation exists in other languages as well.)
 
 ### Pattern matching
 
