@@ -162,7 +162,7 @@ class Spades extends Suit {
 
 ### Value listing
 
-The enumeration itself has an automatically generated static method `values()`.  `values()` returns an indexed array of all defined Cases in lexical order.
+The enumeration itself has an automatically generated static method `values()`.  `values()` returns a packed array of all defined Cases in lexical order.
 
 ```php
 Suit::values();
