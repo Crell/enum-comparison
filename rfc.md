@@ -197,7 +197,7 @@ print "I hope I draw a " . Suit::Spades;
 
 Passing a Primitive Case to a primitive-typed parameter or return will produce the primitive value in weak-typing mode, and produce a `TypeError` in strict-typing mode.
 
-A Primitive-Backed enumeration also has a static method `from()` that is automatically generated.  The `from()` method will up-cast from a primitive to its corresponding Enumerated Case.  Invalid primitives with no matching Case will throw a `TypeError`.
+A Primitive-Backed enumeration also has a static method `from()` that is automatically generated.  The `from()` method will up-cast from a primitive to its corresponding Enumerated Case.  Invalid primitives with no matching Case will throw a `ValueError`.
 
 ```php
 $record = get_stuff_from_database($id);
