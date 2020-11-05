@@ -177,10 +177,10 @@ To define a primitive equivalent for an Enumeration, the syntax is as follows:
 
 ```php
 enum Suit: string {
-  case Hearts('H');
-  case Diamonds('D');
-  case Clubs('C');
-  case Spades('S');
+  case Hearts = 'H';
+  case Diamonds = 'D';
+  case Clubs = 'C';
+  case Spades = 'S';
 }
 ```
 
@@ -219,7 +219,23 @@ $list === [
 ]; // true
 ```
 
-Primitive-backed Cases are not allowed to define a `__toString()` method, as that would create confusion with the primitive value itself.
+Primitive-backed Cases are not allowed to define a `__toString()` method, as that would create confusion with the primitive value itself.  However, primitive-backed Cases are allowed to have other methods just like any other enum:
+
+```php
+enum Suit: string {
+  case Hearts = 'H';
+  case Diamonds = 'D';
+  case Clubs = 'C';
+  case Spades = 'S' {
+    public function color(): string { return 'Black'; }
+  }
+
+  public function color(): string
+  {
+    // ...
+  }
+}
+```
 
 ### Associated Values
 
