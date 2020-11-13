@@ -38,9 +38,9 @@ $val = Suit::Diamonds;
 
 function pick_a_card(Suit $suit) { ... }
 
-pick_a_card($val);       // OK
-pick_a_card(Suit:Clubs); // OK
-pick_a_card('Spades');   // throws TypeError
+pick_a_card($val);        // OK
+pick_a_card(Suit::Clubs); // OK
+pick_a_card('Spades');    // throws TypeError
 ```
 
 In the simple case, multiple cases may be defined on a single line. The following is semantically equivalent to the definition above.
