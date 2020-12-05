@@ -365,7 +365,7 @@ enum Suits
 }
 ```
 
-If a value is not specified, it will be set to the highest existing value + 1.  0 is the default first value but you can set your own.  They are referenced scoped, so `Suits.Diamonds`, `Suits.Spaces`, etc.
+If a value is not specified, it will be set to the highest existing value + 1.  0 is the default first value but you can set your own.  They are referenced scoped, so `Suits.Diamonds`, `Suits.Spades`, etc.
 
 Values can also be defined based on other enum values, bitmask style, such as `RedCards = Hearts|Diamonds`.  However, that only works if the explicit values are defined as bit flags.
 
@@ -418,11 +418,11 @@ enum Suit {
     case hearts
     case diamonds
     case clubs
-    case spaces
+    case spades
 }
 // or
 enum Suit {
-    case hearts, diamonds, clubs, spaces
+    case hearts, diamonds, clubs, spades
 }
 ```
 
@@ -454,7 +454,7 @@ Enums are not natively iterable, but they can be converted into that easily:
 
 ```swift
 enum Suit: CaseIterable {
-    case hearts, diamonds, clubs, spaces
+    case hearts, diamonds, clubs, spades
 }
 
 for s in Suit.allCases {
